@@ -1,0 +1,35 @@
+{
+  "name": "flashcard-app",
+  "version": "1.0.0",
+  "description": "![Design preview for the Flashcard app coding challenge](./preview.jpg)",
+  "keywords": [
+    "flashcard"
+  ],
+  "homepage": "https://github.com/Kosik33i6/flashcard-app#readme",
+  "bugs": {
+    "url": "https://github.com/Kosik33i6/flashcard-app/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kosik33i6/flashcard-app.git"
+  },
+  "license": "ISC",
+  "author": "Kos Krzysztof",
+  "scripts": {
+    "prepare": "husky install && cd backend && npm install && cd .. && cd frontend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "test-frontend": "cd frontend && npm run test",
+    "test-backend": "cd backend && npm run test",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build"
+  },
+  "main": "index.js",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "husky": "^9.1.7"
+  }
+}
