@@ -1,14 +1,30 @@
 import express from 'express';
-import type { Request, Response } from 'express';
+import { connectDB } from '@/db/connect';
+import { Request, Response } from 'express';
+import { PORT, MONGO_URI } from '@/constants';
 
 const app = express();
 
-app.get('/', (_req: Request, res: Response) => {
-  res.send('Hello World from backend!');
+app.get('/', (_: Request, res: Response) => {
+  res.send('Hello World!');
 });
 
-console.log(process.env.TEST);
-console.log('Backend started on http://localhost:3000');
-console.log('Hello!');
+const start = () => {
+  if (!MONGO_URI) {
+    throw new Error(
+      'An error occurred while validating the MongoDB URI. Please check your environment variables',
+    );
+  }
 
-app.listen(3000);
+  connectDB(MONGO_URI)
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`Server is listening on port ${PORT}`);
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+start();
