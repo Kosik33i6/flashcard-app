@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
-import { User } from '@/@types';
+import { UserDocument } from '@/@types';
 
-const UserSchema = new Schema<User>(
+const UserSchema = new Schema<UserDocument>(
   {
     name: {
       type: String,
@@ -34,4 +34,4 @@ const UserSchema = new Schema<User>(
   { timestamps: true },
 );
 
-export const UserModel = model<User>('User', UserSchema);
+export const UserModel = model<UserDocument>('User', UserSchema);

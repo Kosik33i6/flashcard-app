@@ -1,6 +1,8 @@
+import { Document } from 'mongoose';
+
 export type UserRole = 'admin' | 'user';
 
-export interface User {
+export interface UserDocument extends Document {
   name: string;
   email: string;
   password: string;
