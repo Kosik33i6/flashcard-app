@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose';
+import { genSalt, hash, compare } from 'bcryptjs';
 import { UserDocument } from '@/@types';
+import { userSchema } from '@/schemas';
 
 const UserSchema = new Schema<UserDocument>(
   {
@@ -7,8 +9,8 @@ const UserSchema = new Schema<UserDocument>(
       type: String,
       required: [true, 'Name is required'],
       trim: true,
-      minLength: [3, 'Name must be at least 3 characters long'],
-      maxLength: [20, 'Name must be at most 20 characters long'],
+      minLength: [2, 'Name must be at least 3 characters long'],
+      maxLength: [50, 'Name must be at most 20 characters long'],
     },
     email: {
       type: String,
@@ -17,13 +19,19 @@ const UserSchema = new Schema<UserDocument>(
       lowercase: true,
       minLength: [5, 'Email must be at least 5 characters long'],
       maxLength: [50, 'Email must be at most 50 characters long'],
+      validate: {
+        validator: (value: string) =>
+          userSchema.shape.email.safeParse(value).success,
+        message: (props) => `${props.value} is not a valid email`,
+      },
     },
     password: {
       type: String,
       required: [true, 'Password is required'],
       trim: true,
-      minLength: 7,
+      minLength: 8,
       maxLength: 50,
+      select: false,
     },
     role: {
       type: String,
@@ -34,4 +42,16 @@ const UserSchema = new Schema<UserDocument>(
   { timestamps: true },
 );
 
-export const UserModel = model<UserDocument>('User', UserSchema);
+UserSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
+  const salt = await genSalt(12);
+  this.password = await hash(this.password, salt);
+});
+
+UserSchema.methods.comparePassword = async function (
+  candidatePassword: string,
+): Promise<boolean> {
+  return await compare(candidatePassword, this.password);
+};
+
+export const User = model<UserDocument>('User', UserSchema);
